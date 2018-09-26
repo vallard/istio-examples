@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: istio-backend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: istio-backend
+        version: v1  
+    spec:
+      containers:
+      - name: istio-backend
+        image: vallard/istio-backend:1
+        env:
+        - name: VERSION
+          value: "I am version 1\n"
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+   svc: istio-backend
+  name: istio-backend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: istio-backend
+  sessionAffinity: None
+  type: ClusterIP

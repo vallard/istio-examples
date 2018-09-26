@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: istio-backend-v2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: istio-backend
+        version: v2  
+    spec:
+      containers:
+      - name: istio-backend
+        image: vallard/istio-backend:1
+        env:
+        - name: VERSION
+          value: "I am version 2\n"
+        ports:
+        - containerPort: 3000

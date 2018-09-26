@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: istio-frontend
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: istio-frontend
+        version: v1  
+    spec:
+      containers:
+      - name: istio-frontend
+        image: vallard/istio-frontend
+        env:
+        - name: BACKEND
+          value: "http://istio-backend/hello"
+        ports:
+        - containerPort: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    serviceName: istio-frontend        
+    app: istio-frontend
+    version: v1
+  name: istio-frontend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3001
+  selector:
+    app: istio-frontend
+  type: LoadBalancer
+#---
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#annotations:
+#    kubernetes.io/ingress.class: nginx
+#    nginx.ingress.kubernetes.io/add-base-url: "true"
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+#  name: frontend
+  #spec:
+  #rules:
+  #- http:
+  #    paths:
+  #    - backend:
+  #            #serviceName: istio-frontend
+          #servicePort: 80
+          #        path: /frontend
